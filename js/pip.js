@@ -116,7 +116,8 @@ export class Pip {
     this.bind();
     this.blinkLoop();
     this.idleLoop();
-    requestAnimationFrame(() => this.frame());
+    this.head.style.transformOrigin = '100px 160px';
+    this.wakeEyes();
   }
 
   bind() {
@@ -132,6 +133,7 @@ export class Pip {
       this.target.y = (dy / d) * 6 * k;
       this.target.tilt = clamp(dx / 60, -8, 8);
       this.activity();
+      this.wakeEyes();
     };
     addEventListener('pointermove', (e) => look(e.clientX, e.clientY), { passive: true });
     addEventListener('pointerdown', (e) => look(e.clientX, e.clientY), { passive: true });
@@ -144,7 +146,7 @@ export class Pip {
     });
 
     if ('IntersectionObserver' in window) {
-      new IntersectionObserver(([en]) => { this.visible = en.isIntersecting; }).observe(this.el);
+      new IntersectionObserver(([en]) => { this.visible = en.isIntersecting; if (this.visible) this.wakeEyes(); }).observe(this.el);
     }
   }
 
@@ -152,19 +154,26 @@ export class Pip {
     this.lastActive = performance.now();
   }
 
+  // the eye loop only runs while the eyes are actually moving
+  wakeEyes() {
+    if (this.looping) return;
+    this.looping = true;
+    requestAnimationFrame(() => this.frame());
+  }
+
   frame() {
     // ease toward the target so the eyes feel soft, not twitchy
     const c = this.cur;
     const t = this.target;
+    const tt = t.tilt || 0;
     c.x += (t.x - c.x) * 0.18;
     c.y += (t.y - c.y) * 0.18;
-    c.tilt += ((t.tilt || 0) - c.tilt) * 0.12;
-    if (this.visible) {
-      const s = this.asleep ? 0 : 1;
-      this.pupils.forEach((p) => p.setAttribute('transform', `translate(${(c.x * s).toFixed(2)} ${(c.y * s).toFixed(2)})`));
-      this.head.style.transform = `rotate(${(c.tilt * 0.6).toFixed(2)}deg)`;
-      this.head.style.transformOrigin = '100px 160px';
-    }
+    c.tilt += (tt - c.tilt) * 0.12;
+    const s = this.asleep ? 0 : 1;
+    this.pupils.forEach((p) => p.setAttribute('transform', `translate(${(c.x * s).toFixed(2)} ${(c.y * s).toFixed(2)})`));
+    this.head.style.transform = `rotate(${(c.tilt * 0.6).toFixed(2)}deg)`;
+    const settled = Math.abs(t.x - c.x) + Math.abs(t.y - c.y) + Math.abs(tt - c.tilt) < 0.02;
+    if (settled || !this.visible || document.hidden) { this.looping = false; return; }
     requestAnimationFrame(() => this.frame());
   }
 
@@ -187,6 +196,7 @@ export class Pip {
       const idle = performance.now() - this.lastActive;
       if (!this.asleep && idle > 3500 && !reducedMotion()) {
         this.target = { x: (Math.random() - 0.5) * 12, y: (Math.random() - 0.3) * 8, tilt: (Math.random() - 0.5) * 8 };
+        this.wakeEyes();
       }
       if (!this.asleep && idle > 28000 && this.visible && !document.hidden) this.sleep();
     }, 1600);
@@ -241,6 +251,7 @@ export class Pip {
   sleep() {
     this.asleep = true;
     this.svg.classList.add('asleep');
+    this.wakeEyes();
     this.say('zzz… (click to wake me)', 0);
     emit('pip-sleep');
   }
@@ -250,6 +261,7 @@ export class Pip {
     this.asleep = false;
     this.activity();
     this.svg.classList.remove('asleep');
+    this.wakeEyes();
     this.svg.classList.add('yawn');
     sfx.yawn();
     setTimeout(() => this.svg.classList.remove('yawn'), 1300);

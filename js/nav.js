@@ -28,6 +28,7 @@ export function initNav() {
   const sections = STOPS.map((id) => document.getElementById(id)).filter(Boolean);
   const guide = $('#guide');
   const bubble = $('#guideBubble');
+  const guideSr = $('#guideSr');
   let current = '';
   let queued = false;
   let lastY = scrollY;
@@ -50,7 +51,7 @@ export function initNav() {
       goingUp = dy < 0 && scrollY > innerHeight * 1.2;
       guide.classList.toggle('up', goingUp);
       if (goingUp && !wasUp && document.body.classList.contains('booted')) say('going up? tap me and we\'ll fly to the top ▴', 2600);
-      guide.setAttribute('aria-label', goingUp || current === 'guestbook' ? 'Pip, your tour guide. Click to fly back to the top.' : 'Pip, your tour guide. Click to go to the next section.');
+      guideSr.textContent = goingUp || current === 'guestbook' ? 'Pip, your tour guide: fly back to the top.' : 'Pip, your tour guide: go to the next section.';
       lastY = scrollY;
     }
     progress.style.transform = `scaleX(${max > 0 ? Math.min(1, scrollY / max) : 0})`;

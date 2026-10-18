@@ -64,7 +64,18 @@ export function initChaos({ pip }) {
     wins.forEach((el) => { el.style.removeProperty('--rot'); el.style.removeProperty('--dx'); el.style.removeProperty('translate'); delete el.dataset.dragged; });
   }
 
+  // the crayon font is only needed here, so it's fetched on first use
+  function loadHandFont() {
+    if (document.getElementById('handFont')) return;
+    const l = document.createElement('link');
+    l.id = 'handFont';
+    l.rel = 'stylesheet';
+    l.href = 'https://fonts.googleapis.com/css2?family=Gochi+Hand&display=swap';
+    document.head.appendChild(l);
+  }
+
   function set(on, announce) {
+    if (on) loadHandFont();
     root.classList.toggle('chaos', on);
     try { localStorage.setItem('pip.chaos', on ? '1' : '0'); } catch { /* fine */ }
     btn.setAttribute('aria-pressed', String(on));

@@ -75,8 +75,8 @@ function boot() {
       log.appendChild(li);
       i++;
       bar.style.width = `${(i / lines.length) * 100}%`;
-      setTimeout(step, 260);
-    } else setTimeout(done, 350);
+      setTimeout(step, 140);
+    } else setTimeout(done, 200);
   };
   step();
   $('#bootSkip').addEventListener('click', done);
@@ -313,6 +313,10 @@ function webring() {
 }
 
 /* ---------------- go! ---------------- */
+// below-the-fold toys wake up when the browser is idle, so the first paint stays quick
+const idle = (fn) => ('requestIdleCallback' in window ? requestIdleCallback(fn, { timeout: 1500 }) : setTimeout(fn, 200));
+const later = (name, fn) => idle(() => safe(name, fn));
+
 safe('pip', () => { pip = new Pip($('#pipHero'), $('#pipBubble')); });
 safe('mood', () => {
   setMood(root.dataset.mood || 'night');
@@ -331,21 +335,21 @@ safe('boop', () => $('#pipBoop').addEventListener('click', () => pip && pip.boop
 safe('boot', boot);
 safe('clock', clock);
 safe('start', startMenu);
-safe('counter', hitCounter);
-safe('sparkles', sparkles);
+later('counter', hitCounter);
+later('sparkles', sparkles);
 safe('clicks', clickSounds);
 safe('winbtns', windowButtons);
-safe('webring', webring);
+later('webring', webring);
 safe('desk', initDesk);
 safe('nav', initNav);
 safe('story', initStory);
-safe('lullaby', initLullaby);
-safe('nightlights', initNightlights);
-safe('routes', initRoutes);
-safe('toys', initToys);
-safe('storybook', initStorybook);
-safe('growth', initGrowth);
-safe('chat', () => initChat({ getVisitor, pip: () => pip }));
-safe('guestbook', () => initGuestbook({ getVisitor }));
+later('lullaby', initLullaby);
+later('nightlights', initNightlights);
+later('routes', initRoutes);
+later('toys', initToys);
+later('storybook', initStorybook);
+later('growth', initGrowth);
+later('chat', () => initChat({ getVisitor, pip: () => pip }));
+later('guestbook', () => initGuestbook({ getVisitor }));
 safe('chaos', () => initChaos({ pip: () => pip }));
 safe('eggs', () => initEggs({ pip: () => pip }));

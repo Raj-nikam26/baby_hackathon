@@ -15,7 +15,8 @@
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@500;700;800&family=Pixelify+Sans:wght@400;600&family=Gochi+Hand&display=swap">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@500;700;800&family=Pixelify+Sans:wght@400;600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@500;700;800&family=Pixelify+Sans:wght@400;600&display=swap"></noscript>
 <link rel="stylesheet" href="css/style.css">
 <script>
   // set mood + chaos before first paint so nothing flashes
@@ -50,8 +51,8 @@
 <!-- ============ sticky toolbar (navigation + controls) ============ -->
 <header class="toolbar" id="toolbar">
   <div class="tb-inner">
-    <button class="tb-start" id="tbStart" type="button" aria-expanded="false" aria-controls="startMenu"><span class="tb-logo" aria-hidden="true">☾</span><span class="tb-start-l">Start</span></button>
-    <a class="addr" href="#hello" aria-label="Pip's Dream Workshop, back to top"><span class="addr-host">geocribs.net/~pip/</span><span class="addr-path" id="addrPath">hello</span></a>
+    <button class="tb-start" id="tbStart" type="button" aria-expanded="false" aria-controls="startMenu" aria-label="Start menu"><span class="tb-logo" aria-hidden="true">☾</span><span class="tb-start-l">Start</span></button>
+    <a class="addr" href="#hello" title="Pip's Dream Workshop: back to top"><span class="addr-host">geocribs.net/~pip/</span><span class="addr-path" id="addrPath">hello</span></a>
     <nav class="tb-nav" aria-label="Sections">
       <a href="#hello" data-spy="hello">hello</a>
       <a href="#story" data-spy="story">my story</a>
@@ -97,7 +98,7 @@
 
 <!-- ============ 1. WHAT PIP IS ============ -->
 <section id="hello" class="hero" aria-labelledby="hello-title">
-  <div class="hero-sky" aria-hidden="true">
+  <div class="hero-sky">
     <button class="hero-moon" id="heroMoon" type="button" aria-label="A sleepy moon. Knock knock?">
       <svg viewBox="0 0 100 100"><path d="M62 8a42 42 0 1 0 30 62A36 36 0 0 1 62 8z" fill="var(--moon)"/><path d="M40 52q5 4 10 0M58 60q5 4 10 0" stroke="#7a5a6a" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="40" cy="62" r="4" fill="#ffb3c7" opacity=".7"/></svg>
     </button>
@@ -245,18 +246,20 @@
   <h2 id="work-title" class="sec-title"><span class="pixel">chapter 03</span> things i made</h2>
   <p class="sec-sub">my desktop! click an icon to open a project. (one at a time, i'm a baby, i get overwhelmed)</p>
   <div class="desk" id="desk">
-    <div class="desk-icons" role="tablist" aria-label="Pip's projects" aria-orientation="vertical">
+    <div class="desk-icons">
+      <div class="desk-tabs" role="tablist" aria-label="Pip's projects" aria-orientation="vertical">
       <button class="dicon" role="tab" id="tab-lullaby-lab" aria-controls="lullaby-lab" aria-selected="true"><span class="dico">🎵</span><span>Lullaby Lab</span></button>
       <button class="dicon" role="tab" id="tab-nightlights" aria-controls="nightlights" aria-selected="false" tabindex="-1"><span class="dico">🏮</span><span>Nightlights</span></button>
       <button class="dicon" role="tab" id="tab-toys" aria-controls="toys" aria-selected="false" tabindex="-1"><span class="dico">🧸</span><span>Toys.exe</span></button>
       <button class="dicon" role="tab" id="tab-storybook" aria-controls="storybook" aria-selected="false" tabindex="-1"><span class="dico">📖</span><span>Storybook</span></button>
       <button class="dicon" role="tab" id="tab-growth" aria-controls="growth" aria-selected="false" tabindex="-1"><span class="dico">📏</span><span>Growth Chart</span></button>
+      </div>
       <a class="dicon dicon-link" href="#routes"><span class="dico">🗺️</span><span>Dream Routes ↑</span></a>
     </div>
     <div class="desk-stage" id="deskStage">
 
   <!-- ---- Lullaby Lab ---- -->
-  <article id="lullaby-lab" class="win project" data-win role="tabpanel" aria-labelledby="ll-title">
+  <section id="lullaby-lab" class="win project" data-win role="tabpanel" aria-labelledby="ll-title">
     <div class="win-bar"><span class="win-ico">♫</span><span class="win-title">lullaby_lab.exe</span><span class="win-btns" aria-hidden="true"><i>_</i><i>□</i><i class="x">×</i></span></div>
     <div class="win-body ll">
       <header class="proj-head">
@@ -289,10 +292,10 @@
         </div>
       </div>
     </div>
-  </article>
+  </section>
 
   <!-- ---- Nightlight Collection ---- -->
-  <article id="nightlights" class="win project" data-win role="tabpanel" hidden aria-labelledby="nl-title">
+  <section id="nightlights" class="win project" data-win role="tabpanel" hidden aria-labelledby="nl-title">
     <div class="win-bar"><span class="win-ico">✺</span><span class="win-title">nightlight_collection</span><span class="win-btns" aria-hidden="true"><i>_</i><i>□</i><i class="x">×</i></span></div>
     <div class="win-body">
       <header class="proj-head">
@@ -307,12 +310,12 @@
         <p class="nl-card" id="nlCard" aria-live="polite"></p>
       </div>
     </div>
-  </article>
+  </section>
 
 
 
   <!-- ---- Toys ---- -->
-  <article id="toys" class="win project" data-win role="tabpanel" hidden aria-labelledby="toy-title">
+  <section id="toys" class="win project" data-win role="tabpanel" hidden aria-labelledby="toy-title">
     <div class="win-bar"><span class="win-ico">✿</span><span class="win-title">toys.exe — catch the dreams!</span><span class="win-btns" aria-hidden="true"><i>_</i><i>□</i><i class="x">×</i></span></div>
     <div class="win-body">
       <header class="proj-head">
@@ -344,10 +347,10 @@
         </div>
       </div>
     </div>
-  </article>
+  </section>
 
   <!-- ---- Storybook ---- -->
-  <article id="storybook" class="win project" data-win role="tabpanel" hidden aria-labelledby="sb-title">
+  <section id="storybook" class="win project" data-win role="tabpanel" hidden aria-labelledby="sb-title">
     <div class="win-bar"><span class="win-ico">❀</span><span class="win-title">goodnight_boo.book</span><span class="win-btns" aria-hidden="true"><i>_</i><i>□</i><i class="x">×</i></span></div>
     <div class="win-body">
       <header class="proj-head">
@@ -363,10 +366,10 @@
         </div>
       </div>
     </div>
-  </article>
+  </section>
 
   <!-- ---- Growth chart ---- -->
-  <article id="growth" class="win project" data-win role="tabpanel" hidden aria-labelledby="gc-title">
+  <section id="growth" class="win project" data-win role="tabpanel" hidden aria-labelledby="gc-title">
     <div class="win-bar"><span class="win-ico">✎</span><span class="win-title">growth_chart.bmp</span><span class="win-btns" aria-hidden="true"><i>_</i><i>□</i><i class="x">×</i></span></div>
     <div class="win-body">
       <header class="proj-head">
@@ -375,7 +378,7 @@
       </header>
       <div class="growth" id="growthWall"></div>
     </div>
-  </article>
+  </section>
     </div>
     <div class="desk-foot">
       <button class="btn tiny" id="deskPrev" type="button">◂ previous</button>
@@ -469,7 +472,8 @@
 </footer>
 
 <!-- ============ Pip the tour guide ============ -->
-<button class="guide" id="guide" type="button" aria-label="Pip, your tour guide. Click to go to the next section.">
+<button class="guide" id="guide" type="button">
+  <span class="sr" id="guideSr">Pip, your tour guide: go to the next section.</span>
   <span class="guide-bubble" id="guideBubble" aria-live="polite"></span>
   <svg class="guide-pip" viewBox="0 0 100 100" aria-hidden="true"><use href="#i-pip"/></svg>
   <span class="guide-next" aria-hidden="true">next ▾</span>
