@@ -1,0 +1,346 @@
+// Pip's Dream Workshop: boots the page and wires the shared bits
+// (taskbar, mood, sound, sparkles, visitor memory, hit counter).
+import { $, $$, store, toast, on, emit, reducedMotion, pick, renderOdometer } from './util.js';
+import { sfx, isMuted, setMuted } from './audio.js';
+import { Pip } from './pip.js';
+import { initStory } from './story.js';
+import { initLullaby } from './lullaby.js';
+import { initNightlights } from './nightlights.js';
+import { initRoutes } from './routes.js';
+import { initToys } from './toys.js';
+import { initStorybook } from './storybook.js';
+import { initGrowth } from './growth.js';
+import { initChat } from './chat.js';
+import { initGuestbook } from './guestbook.js';
+import { initChaos } from './chaos.js';
+import { initEggs } from './eggs.js';
+
+const root = document.documentElement;
+let pip;
+
+// one broken toy should never take the whole nursery down
+function safe(name, fn) {
+  try { fn(); } catch (err) { console.warn(`[pip] ${name} took a nap:`, err); }
+}
+
+/* ---------------- visitor memory ---------------- */
+const visit = (() => {
+  const v = store.get('visitor', { visits: 0, first: Date.now(), last: 0, name: '' });
+  const prevLast = v.last;
+  v.visits += 1;
+  v.last = Date.now();
+  store.set('visitor', v);
+  return { ...v, prevLast };
+})();
+export const getVisitor = () => store.get('visitor', visit);
+
+function greeting() {
+  const name = getVisitor().name;
+  if (visit.visits <= 1) return 'hi hi! i\'m Pip! ✦';
+  const away = Date.now() - visit.prevLast;
+  const hi = name ? `welcome back, ${name}!` : 'you came back!!';
+  if (away < 1000 * 60 * 30) return `${hi} (that was quick hehe)`;
+  return `${hi} visit #${visit.visits} ✦ i saved u a dream`;
+}
+
+/* ---------------- boot screen ---------------- */
+function boot() {
+  const el = $('#boot');
+  if (!el) return;
+  const done = () => {
+    if (el.classList.contains('gone')) return;
+    el.classList.add('gone');
+    setTimeout(() => el.remove(), 600);
+    if (pip) { pip.wave(); pip.say(greeting(), 4200); }
+  };
+  if (reducedMotion() || store.get('booted-recently', 0) > Date.now() - 1000 * 60 * 10) { done(); return; }
+  store.set('booted-recently', Date.now());
+  const log = $('#bootLog');
+  const bar = $('#bootBar');
+  const lines = [
+    'dialing MIDNIGHT NURSERY… ☎',
+    'handshake: *beeeep* *krrrsh* *boop*',
+    'loading lullabies………… ok',
+    'warming nightlights…………… ok',
+    visit.visits > 1 ? `found you in my memory (visit #${visit.visits}) ♡` : 'making a new friend…',
+  ];
+  let i = 0;
+  const step = () => {
+    if (i < lines.length) {
+      const li = document.createElement('li');
+      li.textContent = lines[i];
+      log.appendChild(li);
+      i++;
+      bar.style.width = `${(i / lines.length) * 100}%`;
+      setTimeout(step, 260);
+    } else setTimeout(done, 350);
+  };
+  step();
+  $('#bootSkip').addEventListener('click', done);
+  el.addEventListener('click', done);
+  addEventListener('keydown', done, { once: true });
+  setTimeout(done, 4000); // never trap anyone
+}
+
+/* ---------------- mood (day / night) ---------------- */
+function setMood(mood, announce) {
+  root.dataset.mood = mood;
+  store.set('mood', mood);
+  try { localStorage.setItem('pip.mood', mood); } catch { /* fine */ }
+  const btn = $('#tbMood');
+  btn.querySelector('.tb-i').textContent = mood === 'night' ? '☾' : '☀';
+  btn.querySelector('.tb-l').textContent = mood;
+  btn.setAttribute('aria-label', `Mood: ${mood}. Switch to ${mood === 'night' ? 'day' : 'night'}`);
+  $('meta[name="theme-color"]').content = mood === 'night' ? '#1b1640' : '#fff1e2';
+  const meter = $('#sleepMeter');
+  if (meter) meter.style.width = mood === 'night' ? '18%' : '86%';
+  if (pip) {
+    pip.setMood(mood);
+    if (announce) pip.say(mood === 'night' ? 'ooh it\'s night! i\'m AWAKE ✦' : '*yawn* daytime… so sleepy…', 2800);
+  }
+  emit('mood', mood);
+}
+
+/* ---------------- sound ---------------- */
+function renderSound() {
+  const m = isMuted();
+  const b = $('#tbSound');
+  b.setAttribute('aria-pressed', String(m));
+  b.setAttribute('aria-label', m ? 'Sound is off. Turn sound on' : 'Sound is on. Mute all sounds');
+  b.querySelector('.tb-i').textContent = m ? '🔇' : '🔊';
+  b.querySelector('.tb-l').textContent = m ? 'muted' : 'sound on';
+}
+
+/* ---------------- clock ---------------- */
+function clock() {
+  const el = $('#tbClock');
+  const tick = () => {
+    const d = new Date();
+    const h = d.getHours();
+    const t = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    let tag = '';
+    if (h >= 19 || h < 6) tag = ' ☾';
+    else if (h >= 17) tag = ' ⌛';
+    el.textContent = t + tag;
+    el.title = h >= 19 || h < 6 ? 'it\'s dream o\'clock' : `bedtime in ~${(19 - h + 24) % 24}h`;
+  };
+  tick();
+  setInterval(tick, 20000);
+}
+
+/* ---------------- start menu ---------------- */
+function startMenu() {
+  const btn = $('#tbStart');
+  const menu = $('#startMenu');
+  const close = () => { menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); };
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const open = menu.hidden;
+    menu.hidden = !open;
+    btn.setAttribute('aria-expanded', String(open));
+    if (open) menu.querySelector('a').focus();
+  });
+  menu.addEventListener('click', (e) => { if (e.target.closest('a,button')) close(); });
+  document.addEventListener('click', (e) => { if (!menu.hidden && !menu.contains(e.target)) close(); });
+  addEventListener('keydown', (e) => { if (e.key === 'Escape' && !menu.hidden) { close(); btn.focus(); } });
+
+  $('#smShutdown').addEventListener('click', () => {
+    const s = $('#shutdown');
+    s.hidden = false;
+    sfx.yawn();
+    if (pip) pip.sleep();
+    const wake = () => {
+      s.hidden = true;
+      if (pip) pip.wake(false);
+      removeEventListener('keydown', wake);
+    };
+    setTimeout(() => { s.addEventListener('click', wake, { once: true }); addEventListener('keydown', wake); }, 400);
+  });
+}
+
+/* ---------------- odometer hit counter ---------------- */
+async function hitCounter() {
+  const el = $('#hitCounter');
+  renderOdometer(el, 0, 6);
+  let first = false;
+  try { first = !sessionStorage.getItem('pip.counted'); sessionStorage.setItem('pip.counted', '1'); } catch { /* fine */ }
+  try {
+    const res = await fetch('/api/counter', { method: first ? 'POST' : 'GET', headers: { accept: 'application/json' } });
+    if (!res.ok) throw new Error(res.status);
+    const { count } = await res.json();
+    setTimeout(() => renderOdometer(el, count, 6), 500);
+  } catch {
+    // no backend (e.g. opened from a file): count this browser's visits instead
+    setTimeout(() => renderOdometer(el, visit.visits, 6), 500);
+    el.title = 'offline mode: counting your visits';
+  }
+}
+
+/* ---------------- sparkle cursor trail ---------------- */
+function sparkles() {
+  const cv = $('#sparkles');
+  if (reducedMotion() || !cv.getContext) { cv.remove(); return; }
+  const cx = cv.getContext('2d');
+  let W = 0, H = 0, dpr = 1;
+  const parts = [];
+  let running = false;
+  let lx = 0, ly = 0;
+  const resize = () => {
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    W = innerWidth; H = innerHeight;
+    cv.width = W * dpr; cv.height = H * dpr;
+    cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  };
+  resize();
+  addEventListener('resize', resize);
+
+  const COLORS = ['#ffd98a', '#ffb3c7', '#c7b8ff', '#a8f0d8', '#ffffff'];
+  const spawn = (x, y, n = 1, burst = false) => {
+    for (let i = 0; i < n; i++) {
+      const day = root.dataset.mood === 'day';
+      const r = Math.random();
+      parts.push({
+        x, y,
+        vx: (Math.random() - 0.5) * (burst ? 5 : 1.2),
+        vy: (burst ? -Math.random() * 4 : Math.random() * 0.6) - 0.2,
+        life: 1,
+        decay: 0.016 + Math.random() * 0.02,
+        size: 3 + Math.random() * (burst ? 7 : 5),
+        rot: Math.random() * 6,
+        vr: (Math.random() - 0.5) * 0.2,
+        color: pick(COLORS),
+        kind: r < 0.12 ? 'bone' : day ? (r < 0.55 ? 'heart' : 'bubble') : (r < 0.8 ? 'star' : 'dot'),
+      });
+    }
+    if (parts.length > 220) parts.splice(0, parts.length - 220);
+    if (!running) { running = true; requestAnimationFrame(draw); }
+  };
+
+  const star = (s) => {
+    cx.beginPath();
+    for (let i = 0; i < 10; i++) {
+      const a = (i * Math.PI) / 5;
+      const rr = i % 2 ? s * 0.45 : s;
+      cx.lineTo(Math.sin(a) * rr, -Math.cos(a) * rr);
+    }
+    cx.closePath(); cx.fill();
+  };
+  const heart = (s) => {
+    cx.beginPath();
+    cx.moveTo(0, s * 0.35);
+    cx.bezierCurveTo(-s * 1.1, -s * 0.4, -s * 0.4, -s * 1.1, 0, -s * 0.45);
+    cx.bezierCurveTo(s * 0.4, -s * 1.1, s * 1.1, -s * 0.4, 0, s * 0.35);
+    cx.fill();
+  };
+  const bone = (s) => {
+    cx.lineWidth = s * 0.45; cx.lineCap = 'round';
+    cx.beginPath(); cx.moveTo(-s, 0); cx.lineTo(s, 0); cx.stroke();
+    [[-s, -s * 0.35], [-s, s * 0.35], [s, -s * 0.35], [s, s * 0.35]].forEach(([a, b]) => { cx.beginPath(); cx.arc(a, b, s * 0.38, 0, 7); cx.fill(); });
+  };
+
+  function draw() {
+    cx.clearRect(0, 0, W, H);
+    for (let i = parts.length - 1; i >= 0; i--) {
+      const p = parts[i];
+      p.x += p.vx; p.y += p.vy; p.vy += 0.03; p.rot += p.vr; p.life -= p.decay;
+      if (p.life <= 0) { parts.splice(i, 1); continue; }
+      cx.save();
+      cx.globalAlpha = Math.min(1, p.life * 1.4);
+      cx.translate(p.x, p.y); cx.rotate(p.rot);
+      cx.fillStyle = p.kind === 'bone' ? '#fffaf0' : p.color;
+      cx.strokeStyle = '#fffaf0';
+      const s = p.size * (0.5 + p.life * 0.5);
+      if (p.kind === 'star') star(s);
+      else if (p.kind === 'heart') heart(s);
+      else if (p.kind === 'bone') bone(s * 0.7);
+      else if (p.kind === 'bubble') { cx.strokeStyle = p.color; cx.lineWidth = 1.5; cx.beginPath(); cx.arc(0, 0, s, 0, 7); cx.stroke(); }
+      else { cx.beginPath(); cx.arc(0, 0, s * 0.4, 0, 7); cx.fill(); }
+      cx.restore();
+    }
+    if (parts.length) requestAnimationFrame(draw);
+    else { running = false; cx.clearRect(0, 0, W, H); }
+  }
+
+  addEventListener('pointermove', (e) => {
+    const d = Math.hypot(e.clientX - lx, e.clientY - ly);
+    if (d < 14) return;
+    lx = e.clientX; ly = e.clientY;
+    spawn(e.clientX, e.clientY, e.pointerType === 'touch' ? 1 : 2);
+  }, { passive: true });
+  addEventListener('pointerdown', (e) => spawn(e.clientX, e.clientY, 8, true), { passive: true });
+  on('burst', ({ x, y, n = 30 }) => spawn(x, y, n, true));
+}
+
+/* ---------------- click sounds everywhere (with mute) ---------------- */
+function clickSounds() {
+  document.addEventListener('click', (e) => {
+    const t = e.target.closest('a, button, label, input[type="radio"], .dicon');
+    if (!t || t.closest('[data-quiet]')) return;
+    sfx.click();
+  });
+}
+
+/* ---------------- window title-bar buttons ---------------- */
+function windowButtons() {
+  const quips = ['nope! this window is having a nice time', 'can\'t close, it\'s storytime', 'minimize?? but i\'m already tiny', 'that button is just for decoration (like my bow)'];
+  document.addEventListener('click', (e) => {
+    const b = e.target.closest('.win-btns i');
+    if (!b) return;
+    const w = b.closest('[data-win], .win, .im');
+    w.classList.remove('wiggle');
+    void w.offsetWidth;
+    w.classList.add('wiggle');
+    sfx.boop();
+    toast(pick(quips));
+  });
+  // the spans are decorative; give them real button semantics lazily
+  $$('.win-btns i').forEach((i) => { i.setAttribute('role', 'presentation'); });
+}
+
+/* ---------------- webring ---------------- */
+function webring() {
+  const ids = ['hello', 'story', 'lullaby-lab', 'nightlights', 'routes', 'toys', 'storybook', 'growth', 'chat', 'guestbook'];
+  $$('.webring a').forEach((a) => a.addEventListener('click', (e) => {
+    e.preventDefault();
+    const kind = a.dataset.ring;
+    const target = kind === 'random' ? pick(ids.slice(1)) : kind === 'prev' ? 'guestbook' : 'hello';
+    document.getElementById(target).scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth' });
+    toast(kind === 'random' ? '✦ webring says: go here!' : 'the webring only has 1 site. it\'s me ♡');
+  }));
+}
+
+/* ---------------- go! ---------------- */
+safe('pip', () => { pip = new Pip($('#pipHero'), $('#pipBubble')); });
+safe('mood', () => {
+  setMood(root.dataset.mood || 'night');
+  $('#tbMood').addEventListener('click', () => { setMood(root.dataset.mood === 'night' ? 'day' : 'night', true); sfx.sparkle(); });
+});
+safe('sound', () => {
+  renderSound();
+  $('#tbSound').addEventListener('click', () => {
+    setMuted(!isMuted());
+    renderSound();
+    toast(isMuted() ? '🔇 shhh… all sounds off' : '🔊 sounds on! ♪');
+    if (!isMuted()) sfx.sparkle();
+  });
+});
+safe('boop', () => $('#pipBoop').addEventListener('click', () => pip && pip.boop()));
+safe('boot', boot);
+safe('clock', clock);
+safe('start', startMenu);
+safe('counter', hitCounter);
+safe('sparkles', sparkles);
+safe('clicks', clickSounds);
+safe('winbtns', windowButtons);
+safe('webring', webring);
+safe('story', initStory);
+safe('lullaby', initLullaby);
+safe('nightlights', initNightlights);
+safe('routes', initRoutes);
+safe('toys', initToys);
+safe('storybook', initStorybook);
+safe('growth', initGrowth);
+safe('chat', () => initChat({ getVisitor, pip: () => pip }));
+safe('guestbook', () => initGuestbook({ getVisitor }));
+safe('chaos', () => initChaos({ pip: () => pip }));
+safe('eggs', () => initEggs({ pip: () => pip }));
