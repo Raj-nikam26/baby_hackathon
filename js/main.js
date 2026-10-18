@@ -45,44 +45,13 @@ function greeting() {
   return `${hi} visit #${visit.visits} ✦ i saved u a dream`;
 }
 
-/* ---------------- boot screen ---------------- */
+/* ---------------- boot screen ----------------
+   the dial-up screen itself runs inline in index.html so it never waits on
+   these modules; here Pip just says hello once it has faded */
 function boot() {
-  const el = $('#boot');
-  if (!el) { document.body.classList.add('booted'); return; }
-  const done = () => {
-    if (el.classList.contains('gone')) return;
-    el.classList.add('gone');
-    document.body.classList.add('booted');
-    setTimeout(() => el.remove(), 600);
-    if (pip) { pip.wave(); pip.say(greeting(), 4200); }
-  };
-  if (reducedMotion() || store.get('booted-recently', 0) > Date.now() - 1000 * 60 * 10) { done(); return; }
-  store.set('booted-recently', Date.now());
-  const log = $('#bootLog');
-  const bar = $('#bootBar');
-  const lines = [
-    'dialing MIDNIGHT NURSERY… ☎',
-    'handshake: *beeeep* *krrrsh* *boop*',
-    'loading lullabies………… ok',
-    'warming nightlights…………… ok',
-    visit.visits > 1 ? `found you in my memory (visit #${visit.visits}) ♡` : 'making a new friend…',
-  ];
-  let i = 0;
-  const step = () => {
-    if (i < lines.length) {
-      const li = document.createElement('li');
-      li.textContent = lines[i];
-      log.appendChild(li);
-      i++;
-      bar.style.width = `${(i / lines.length) * 100}%`;
-      setTimeout(step, 140);
-    } else setTimeout(done, 200);
-  };
-  step();
-  $('#bootSkip').addEventListener('click', done);
-  el.addEventListener('click', done);
-  addEventListener('keydown', done, { once: true });
-  setTimeout(done, 4000); // never trap anyone
+  const greet = () => { if (pip) { pip.wave(); pip.say(greeting(), 4200); } };
+  if (document.body.classList.contains('booted')) greet();
+  else document.addEventListener('pip:booted', greet, { once: true });
 }
 
 /* ---------------- mood (day / night) ---------------- */
@@ -93,7 +62,6 @@ function setMood(mood, announce) {
   const btn = $('#tbMood');
   btn.querySelector('.tb-i').textContent = mood === 'night' ? '☾' : '☀';
   btn.querySelector('.tb-l').textContent = mood;
-  btn.setAttribute('aria-label', `Mood: ${mood}. Switch to ${mood === 'night' ? 'day' : 'night'}`);
   $('meta[name="theme-color"]').content = mood === 'night' ? '#1b1640' : '#fff1e2';
   const meter = $('#sleepMeter');
   if (meter) meter.style.width = mood === 'night' ? '18%' : '86%';
@@ -109,7 +77,6 @@ function renderSound() {
   const m = isMuted();
   const b = $('#tbSound');
   b.setAttribute('aria-pressed', String(m));
-  b.setAttribute('aria-label', m ? 'Sound is off. Turn sound on' : 'Sound is on. Mute all sounds');
   b.querySelector('.tb-i').textContent = m ? '🔇' : '🔊';
   b.querySelector('.tb-l').textContent = m ? 'muted' : 'sound on';
 }

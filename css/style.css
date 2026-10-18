@@ -140,7 +140,7 @@ kbd { font-family: var(--font-ui); background: var(--paper); color: var(--ink); 
 .tb-start:active, .tb-start[aria-expanded="true"] { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
 .tb-logo { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--ink); color: var(--gold); font-size: 15px; }
 .addr { display: flex; align-items: center; min-width: 0; height: 34px; padding: 0 12px; background: #fff; border: 2px solid #cfc4ec; border-radius: 999px; font: 500 14px var(--font); color: var(--ink-soft); text-decoration: none; white-space: nowrap; overflow: hidden; flex: 0 1 auto; }
-.addr-host { opacity: .7; }
+.addr-host { color: var(--ink-soft); }
 .addr-path { color: #a8326a; font-weight: 600; transition: opacity .2s; }
 .addr-path.swap { opacity: 0; }
 .tb-nav { display: flex; gap: 2px; margin: 0 auto; }
@@ -695,7 +695,7 @@ body:not(.booted) .guide { opacity: 0; }
 
 /* toolbar at smaller sizes */
 @media (max-width: 1180px) { .tb-clock { display: none; } }
-@media (max-width: 1060px) { .tb-l { display: none; } .tb-btn { padding: 0 9px; } }
+@media (max-width: 1060px) { .tb-l { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; } .tb-btn { padding: 0 9px; } #tbSecretsN { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); } }
 @media (max-width: 860px) { .tb-nav { display: none; } .addr { margin-right: auto; } }
 @media (max-width: 560px) {
   .tb-inner { gap: 6px; padding: 0 8px; }

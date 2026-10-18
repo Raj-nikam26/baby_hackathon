@@ -23,7 +23,6 @@ export function initEggs({ pip }) {
   const btn = $('#tbSecrets');
   const render = () => {
     count.textContent = `${found.size}/${KEYS.length}`;
-    btn.setAttribute('aria-label', `Secrets found: ${found.size} of ${KEYS.length}. Get a hint`);
   };
 
   const unlock = (key) => {
