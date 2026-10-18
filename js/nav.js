@@ -104,8 +104,11 @@ export function initNav() {
     el.scrollIntoView({ behavior: reducedMotion() ? 'instant' : 'smooth', block: 'start' });
     history.replaceState(null, '', id === 'hello' ? location.pathname : `#${id}`);
     const win = el.matches('[data-win], .win') ? el : el.querySelector('[data-win], .win, .im');
-    if (!win) return;
     const arrive = () => {
+      // sections that hadn't rendered yet may have changed size on the way: land exactly
+      const off = el.getBoundingClientRect().top - (bar.offsetHeight + 12);
+      if (id !== 'hello' && Math.abs(off) > 6) scrollBy({ top: off, behavior: 'instant' });
+      if (!win) return;
       win.classList.remove('arrive');
       void win.offsetWidth;
       win.classList.add('arrive');

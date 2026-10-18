@@ -40,9 +40,18 @@ export function initDesk() {
     if (focusTab) tabs[i].focus();
     if (changed && !quiet) { sfx.pop(); emit('desk', id); }
     if (scroll) {
-      const bar = document.getElementById('toolbar').offsetHeight;
-      const top = $('#desk').getBoundingClientRect().top + scrollY - bar - 12;
-      scrollTo({ top, behavior: instant || reducedMotion() ? 'instant' : 'smooth' });
+      // the workspace may not be rendered yet (content-visibility), so get near it
+      // first, let it lay out, then land precisely on the desk
+      const land = (behavior) => {
+        const bar = document.getElementById('toolbar').offsetHeight;
+        const top = $('#desk').getBoundingClientRect().top + scrollY - bar - 12;
+        scrollTo({ top, behavior });
+      };
+      if ($('#desk').getBoundingClientRect().height > 0) land(instant || reducedMotion() ? 'instant' : 'smooth');
+      else {
+        document.getElementById('work').scrollIntoView({ behavior: 'instant' });
+        requestAnimationFrame(() => requestAnimationFrame(() => land('instant')));
+      }
     } else {
       // if the new window starts above the screen, bring its top into view
       const r = stage.getBoundingClientRect();
