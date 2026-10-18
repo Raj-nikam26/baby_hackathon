@@ -1,14 +1,15 @@
 // Wayfinding: scrollspy + progress bar in the toolbar, gentle reveal-on-scroll,
 // an "arrival" glow when you jump somewhere, and Pip as a floating tour guide.
-import { $, $$, reducedMotion } from './util.js';
+import { $, $$, on, reducedMotion } from './util.js';
 import { sfx } from './audio.js';
+import { PROJECTS, openProject } from './desk.js';
 
-const STOPS = ['hello', 'story', 'work', 'lullaby-lab', 'nightlights', 'routes', 'toys', 'storybook', 'growth', 'chat', 'guestbook'];
-const TOP_LEVEL = { work: 'work', 'lullaby-lab': 'work', nightlights: 'work', routes: 'work', toys: 'work', storybook: 'work', growth: 'work' };
+const STOPS = ['hello', 'story', 'routes', 'work', 'chat', 'guestbook'];
+const TOP_LEVEL = { routes: 'story' };
 const GUIDE = {
   hello: 'hi! i\'m ur tour guide. tap me to hop to the next room ✦',
   story: 'this is how i happened! keep scrolling ▾',
-  work: 'my desktop! every icon is a thing i made',
+  work: 'my desktop! click an icon to open a project ✦',
   'lullaby-lab': 'wind my music box!! it makes a new song every night ♪',
   nightlights: 'it\'s so dark in here… find all 6 lights!',
   routes: 'scroll to fly with me over the rooftops ✈',
@@ -29,6 +30,8 @@ export function initNav() {
   const bubble = $('#guideBubble');
   let current = '';
   let queued = false;
+  let lastY = scrollY;
+  let goingUp = false;
   let bubbleT;
 
   const say = (text, ms = 4200) => {
@@ -41,6 +44,15 @@ export function initNav() {
   const update = () => {
     queued = false;
     const max = document.documentElement.scrollHeight - innerHeight;
+    const dy = scrollY - lastY;
+    if (Math.abs(dy) > 6) {
+      const wasUp = goingUp;
+      goingUp = dy < 0 && scrollY > innerHeight * 1.2;
+      guide.classList.toggle('up', goingUp);
+      if (goingUp && !wasUp && document.body.classList.contains('booted')) say('going up? tap me and we\'ll fly to the top ▴', 2600);
+      guide.setAttribute('aria-label', goingUp || current === 'guestbook' ? 'Pip, your tour guide. Click to fly back to the top.' : 'Pip, your tour guide. Click to go to the next section.');
+      lastY = scrollY;
+    }
     progress.style.transform = `scaleX(${max > 0 ? Math.min(1, scrollY / max) : 0})`;
 
     const line = bar.offsetHeight + innerHeight * 0.3;
@@ -67,7 +79,8 @@ export function initNav() {
   /* guide: click to hop to the next room */
   guide.addEventListener('click', () => {
     const i = STOPS.indexOf(current);
-    const next = current === 'guestbook' ? 'hello' : STOPS[Math.min(STOPS.length - 1, i + 1)];
+    const next = goingUp || current === 'guestbook' ? 'hello' : STOPS[Math.min(STOPS.length - 1, i + 1)];
+    if (next === 'hello') { goingUp = false; guide.classList.remove('up'); }
     guide.classList.remove('hop');
     void guide.offsetWidth;
     guide.classList.add('hop');
@@ -75,12 +88,19 @@ export function initNav() {
     go(next);
   });
   setTimeout(() => say(GUIDE.hello, 5200), 2200);
+  // when a new project window opens, Pip tells you what it is
+  on('desk', (id) => { if (GUIDE[id]) say(GUIDE[id]); });
 
   /* smooth in-page jumps + a little "window opens" glow on arrival */
   function go(id) {
+    if (PROJECTS.includes(id)) {
+      openProject(id, { scroll: true });
+      history.replaceState(null, '', `#${id}`);
+      return;
+    }
     const el = document.getElementById(id);
     if (!el) return;
-    el.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' });
+    el.scrollIntoView({ behavior: reducedMotion() ? 'instant' : 'smooth', block: 'start' });
     history.replaceState(null, '', id === 'hello' ? location.pathname : `#${id}`);
     const win = el.matches('[data-win], .win') ? el : el.querySelector('[data-win], .win, .im');
     if (!win) return;
@@ -102,7 +122,7 @@ export function initNav() {
   });
 
   /* reveal windows softly as they scroll in */
-  const items = $$('.project, .im, .gb-form, .gb-wall, .props-win, .desktop, .work > .sec-title, .work > .sec-sub, .chat-sec .sec-title, .gb-sec .sec-title, .gb-sec .sec-sub, .foot > *');
+  const items = $$('.desk, .routes-sec > .sec-title, .im, .gb-form, .gb-wall, .props-win, .work > .sec-title, .work > .sec-sub, .chat-sec .sec-title, .gb-sec .sec-title, .gb-sec .sec-sub, .foot > *');
   if (!reducedMotion() && 'IntersectionObserver' in window) {
     const io = new IntersectionObserver((entries) => {
       entries.forEach((en) => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });

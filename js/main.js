@@ -15,6 +15,7 @@ import { initGuestbook } from './guestbook.js';
 import { initChaos } from './chaos.js';
 import { initEggs } from './eggs.js';
 import { initNav } from './nav.js';
+import { initDesk } from './desk.js';
 
 const root = document.documentElement;
 let pip;
@@ -301,12 +302,12 @@ function windowButtons() {
 
 /* ---------------- webring ---------------- */
 function webring() {
-  const ids = ['hello', 'story', 'lullaby-lab', 'nightlights', 'routes', 'toys', 'storybook', 'growth', 'chat', 'guestbook'];
+  const ids = ['hello', 'story', 'routes', 'work', 'chat', 'guestbook'];
   $$('.webring a').forEach((a) => a.addEventListener('click', (e) => {
     e.preventDefault();
     const kind = a.dataset.ring;
     const target = kind === 'random' ? pick(ids.slice(1)) : kind === 'prev' ? 'guestbook' : 'hello';
-    document.getElementById(target).scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth' });
+    document.getElementById(target).scrollIntoView({ behavior: reducedMotion() ? 'instant' : 'smooth' });
     toast(kind === 'random' ? '✦ webring says: go here!' : 'the webring only has 1 site. it\'s me ♡');
   }));
 }
@@ -335,6 +336,7 @@ safe('sparkles', sparkles);
 safe('clicks', clickSounds);
 safe('winbtns', windowButtons);
 safe('webring', webring);
+safe('desk', initDesk);
 safe('nav', initNav);
 safe('story', initStory);
 safe('lullaby', initLullaby);

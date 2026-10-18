@@ -16,7 +16,7 @@ It's styled as a 1998 GeoCribs homepage that Pip made on a pastel "PipOS 98" des
 | Requirement | Where |
 | --- | --- |
 | **What Pip is** | Hero `pip.exe` window: an interactive SVG Pip, plus a `Pip — Properties` character sheet |
-| **What Pip does** (3+ works) | **All 6** canon projects: Lullaby Lab, Nightlight Collection, Dream Delivery Routes, Rattle & Block Toys, Bedtime Storybook, Growth Chart |
+| **What Pip does** (3+ works) | **All 6** canon projects: Dream Delivery Routes (chapter 2) plus Lullaby Lab, Nightlight Collection, Rattle & Block Toys, Bedtime Storybook and Growth Chart in Pip's Desktop workspace (chapter 3) |
 | **Pip's story** (not a text wall) | Chapter 01: five scroll-driven animated scenes (falling star → cradle → sleepless ghosts → firefly jar → the job) |
 | **Immersion** | Eyes follow the cursor and the head tilts (touch fallback: Pip glances around by itself), clicks, sound with a mute toggle |
 | **Mobile-friendly** | Built mobile-first; at phone size the story re-frames and the map camera follows Pip |
@@ -42,10 +42,13 @@ It's styled as a 1998 GeoCribs homepage that Pip made on a pastel "PipOS 98" des
 4. **The Attic**: knock on the moon 3×
 5. **Dream Disco**: ↑ ↑ ↓ ↓ ← → ← → B A (on touch: tap the 🔑 button 5× fast)
 
-### Getting around
-There's a sticky toolbar with section links and a scrollspy highlight, plus a Start menu (the full table of contents, also the phone menu) and a floating Pip guide ("next ▾"). Windows fade softly into view and glow when you arrive at them. In the story, the progress dots are clickable and there's a "skip to my projects" link.
-
-Bonus jokes: Start → Shut Down ("It's now safe to go to sleep."), window ✕ buttons that refuse to close, and a webring with only one member.
+### Getting around (UX)
+- **Pip's Desktop workspace**: the projects live in one "desktop". Click an icon (or use the arrow keys, since the icons are real tabs) and that project's window opens in place, with *previous / next project* buttons underneath. You never scroll past a pile of windows, and going back up is short.
+- **Sticky toolbar**: section links with a scrollspy highlight, a mini address bar showing where you are (`geocribs.net/~pip/#toys`), a scroll progress strip, and all the controls (sound, day/night, chaos, secrets) at the top where you expect them.
+- **Pip the tour guide** floats in the corner. Pip comments on each room and on every project you open, and a tap hops you to the next section. Start scrolling up and Pip offers to fly you **back to the top**.
+- **Deep links**: `/#toys`, `/#storybook` and so on open that project directly.
+- The scroll-driven chapters are short. The story has clickable scene dots and a "skip to my projects" link.
+- Windows fade softly into view and glow when you jump to them. Toasts appear under the toolbar so nothing covers your thumb.
 
 ---
 
@@ -79,6 +82,7 @@ index.html            all sections + shared SVG sprites
 css/style.css         themes (day/night), windows, layout, Chaos Mode
 js/main.js            boot screen, toolbar controls, mood, sound, sparkles, hit counter
 js/nav.js             scrollspy, progress bar, reveal-on-scroll, Pip tour guide
+js/desk.js            Pip's Desktop: one-window-at-a-time project workspace
 js/pip.js             the interactive SVG Pip puppet
 js/audio.js           Web Audio synth (bells, giggles, rattle, modem…) and tune player
 js/story.js           scroll-driven origin story

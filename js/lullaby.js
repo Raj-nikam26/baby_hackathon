@@ -1,6 +1,6 @@
 // Project 1: The Lullaby Lab. A Web Audio music box + playable star chimes.
 // "tonight song" is generated from today's date, so it's new every night.
-import { $, $$, pick, emit } from './util.js';
+import { $, $$, pick, emit, on } from './util.js';
 import { playTune, sfx } from './audio.js';
 
 const TWINKLE = [
@@ -141,6 +141,9 @@ export function initLullaby() {
     sfx.chime(i);
     lightStar(i);
   });
+
+  // closing the window (switching projects) stops the box too
+  on('desk', (id) => { if (id !== 'lullaby-lab' && stop) finish('paused while you were away.'); });
 
   // stop the music box when the page is hidden: be gentle on ears
   document.addEventListener('visibilitychange', () => { if (document.hidden && stop) finish('paused while you were away.'); });

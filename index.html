@@ -210,23 +210,53 @@
   </div>
 </section>
 
+<!-- ============ 2b. WHAT PIP DOES EVERY NIGHT (scroll map) ============ -->
+<section class="routes-sec" aria-labelledby="rt-title">
+  <h2 class="sec-title"><span class="pixel">chapter 02</span> what i do every night</h2>
+  <article id="routes" class="routes" aria-labelledby="rt-title">
+    <div class="routes-sticky">
+      <div class="win" data-win>
+        <div class="win-bar"><span class="win-ico">✈</span><span class="win-title">dream_delivery_routes.map</span><span class="win-btns" aria-hidden="true"><i>_</i><i>□</i><i class="x">×</i></span></div>
+        <div class="win-body">
+          <header class="proj-head row">
+            <h3 id="rt-title">Dream Delivery Routes</h3>
+            <p>my nightly flight over Hushwillow Lane. scroll to fly me house to house!</p>
+            <p class="pixel rt-count">dreams delivered: <span class="odometer small" id="rtCount">00</span>/08</p>
+          </header>
+          <div class="rt-map">
+            <svg id="rtSvg" viewBox="0 0 1000 520" role="img" aria-label="A map of Hushwillow Lane. A dotted route curls over eight rooftops; Pip flies along it as you scroll and each window lights up when its dream is delivered.">
+              <rect width="1000" height="520" fill="var(--map-sky)"/>
+              <g class="rt-houses" id="rtHouses"></g>
+              <path id="rtPath" d="M40 120 C140 40 200 220 260 180 S380 60 430 150 S540 300 600 210 S720 60 770 140 S900 280 960 200" fill="none" stroke="var(--route)" stroke-width="4" stroke-dasharray="2 12" stroke-linecap="round"/>
+              <path id="rtTrail" d="M40 120 C140 40 200 220 260 180 S380 60 430 150 S540 300 600 210 S720 60 770 140 S900 280 960 200" fill="none" stroke="var(--gold)" stroke-width="5" stroke-linecap="round"/>
+              <g id="rtPip"><circle r="34" fill="var(--gold)" opacity=".25"/><use href="#i-pip" x="-30" y="-34" width="60" height="60"/></g>
+              <g id="rtBubbles"></g>
+            </svg>
+          </div>
+          <p class="rt-now pixel" id="rtNow" aria-live="polite">scroll to take off ✈</p>
+        </div>
+      </div>
+    </div>
+  </article>
+</section>
+
 <!-- ============ 2. WHAT PIP DOES ============ -->
 <section id="work" class="work" aria-labelledby="work-title">
-  <h2 id="work-title" class="sec-title"><span class="pixel">chapter 02</span> things i made</h2>
-  <p class="sec-sub">my desktop! double-click… or just click. i'm a baby, i don't know the rules.</p>
-  <nav class="desktop" aria-label="Pip's projects">
-    <a class="dicon" href="#lullaby-lab"><span class="dico">🎵</span><span>Lullaby Lab</span></a>
-    <a class="dicon" href="#nightlights"><span class="dico">🏮</span><span>Nightlights</span></a>
-    <a class="dicon" href="#routes"><span class="dico">🗺️</span><span>Dream Routes</span></a>
-    <a class="dicon" href="#toys"><span class="dico">🧸</span><span>Toys.exe</span></a>
-    <a class="dicon" href="#storybook"><span class="dico">📖</span><span>Storybook</span></a>
-    <a class="dicon" href="#growth"><span class="dico">📏</span><span>Growth Chart</span></a>
-    <a class="dicon" href="#chat"><span class="dico">💬</span><span>PipIM</span></a>
-    <a class="dicon" href="#guestbook"><span class="dico">📝</span><span>Guestbook</span></a>
-  </nav>
+  <h2 id="work-title" class="sec-title"><span class="pixel">chapter 03</span> things i made</h2>
+  <p class="sec-sub">my desktop! click an icon to open a project. (one at a time, i'm a baby, i get overwhelmed)</p>
+  <div class="desk" id="desk">
+    <div class="desk-icons" role="tablist" aria-label="Pip's projects" aria-orientation="vertical">
+      <button class="dicon" role="tab" id="tab-lullaby-lab" aria-controls="lullaby-lab" aria-selected="true"><span class="dico">🎵</span><span>Lullaby Lab</span></button>
+      <button class="dicon" role="tab" id="tab-nightlights" aria-controls="nightlights" aria-selected="false" tabindex="-1"><span class="dico">🏮</span><span>Nightlights</span></button>
+      <button class="dicon" role="tab" id="tab-toys" aria-controls="toys" aria-selected="false" tabindex="-1"><span class="dico">🧸</span><span>Toys.exe</span></button>
+      <button class="dicon" role="tab" id="tab-storybook" aria-controls="storybook" aria-selected="false" tabindex="-1"><span class="dico">📖</span><span>Storybook</span></button>
+      <button class="dicon" role="tab" id="tab-growth" aria-controls="growth" aria-selected="false" tabindex="-1"><span class="dico">📏</span><span>Growth Chart</span></button>
+      <a class="dicon dicon-link" href="#routes"><span class="dico">🗺️</span><span>Dream Routes ↑</span></a>
+    </div>
+    <div class="desk-stage" id="deskStage">
 
   <!-- ---- Lullaby Lab ---- -->
-  <article id="lullaby-lab" class="win project" data-win aria-labelledby="ll-title">
+  <article id="lullaby-lab" class="win project" data-win role="tabpanel" aria-labelledby="ll-title">
     <div class="win-bar"><span class="win-ico">♫</span><span class="win-title">lullaby_lab.exe</span><span class="win-btns" aria-hidden="true"><i>_</i><i>□</i><i class="x">×</i></span></div>
     <div class="win-body ll">
       <header class="proj-head">
@@ -262,7 +292,7 @@
   </article>
 
   <!-- ---- Nightlight Collection ---- -->
-  <article id="nightlights" class="win project" data-win aria-labelledby="nl-title">
+  <article id="nightlights" class="win project" data-win role="tabpanel" hidden aria-labelledby="nl-title">
     <div class="win-bar"><span class="win-ico">✺</span><span class="win-title">nightlight_collection</span><span class="win-btns" aria-hidden="true"><i>_</i><i>□</i><i class="x">×</i></span></div>
     <div class="win-body">
       <header class="proj-head">
@@ -279,35 +309,10 @@
     </div>
   </article>
 
-  <!-- ---- Dream Delivery Routes ---- -->
-  <article id="routes" class="routes" aria-labelledby="rt-title">
-    <div class="routes-sticky">
-      <div class="win" data-win>
-        <div class="win-bar"><span class="win-ico">✈</span><span class="win-title">dream_delivery_routes.map</span><span class="win-btns" aria-hidden="true"><i>_</i><i>□</i><i class="x">×</i></span></div>
-        <div class="win-body">
-          <header class="proj-head row">
-            <h3 id="rt-title">Dream Delivery Routes</h3>
-            <p>my nightly flight over Hushwillow Lane. scroll to fly me house to house!</p>
-            <p class="pixel rt-count">dreams delivered: <span class="odometer small" id="rtCount">00</span>/08</p>
-          </header>
-          <div class="rt-map">
-            <svg id="rtSvg" viewBox="0 0 1000 520" role="img" aria-label="A map of Hushwillow Lane. A dotted route curls over eight rooftops; Pip flies along it as you scroll and each window lights up when its dream is delivered.">
-              <rect width="1000" height="520" fill="var(--map-sky)"/>
-              <g class="rt-houses" id="rtHouses"></g>
-              <path id="rtPath" d="M40 120 C140 40 200 220 260 180 S380 60 430 150 S540 300 600 210 S720 60 770 140 S900 280 960 200" fill="none" stroke="var(--route)" stroke-width="4" stroke-dasharray="2 12" stroke-linecap="round"/>
-              <path id="rtTrail" d="M40 120 C140 40 200 220 260 180 S380 60 430 150 S540 300 600 210 S720 60 770 140 S900 280 960 200" fill="none" stroke="var(--gold)" stroke-width="5" stroke-linecap="round"/>
-              <g id="rtPip"><circle r="34" fill="var(--gold)" opacity=".25"/><use href="#i-pip" x="-30" y="-34" width="60" height="60"/></g>
-              <g id="rtBubbles"></g>
-            </svg>
-          </div>
-          <p class="rt-now pixel" id="rtNow" aria-live="polite">scroll to take off ✈</p>
-        </div>
-      </div>
-    </div>
-  </article>
+
 
   <!-- ---- Toys ---- -->
-  <article id="toys" class="win project" data-win aria-labelledby="toy-title">
+  <article id="toys" class="win project" data-win role="tabpanel" hidden aria-labelledby="toy-title">
     <div class="win-bar"><span class="win-ico">✿</span><span class="win-title">toys.exe — catch the dreams!</span><span class="win-btns" aria-hidden="true"><i>_</i><i>□</i><i class="x">×</i></span></div>
     <div class="win-body">
       <header class="proj-head">
@@ -342,7 +347,7 @@
   </article>
 
   <!-- ---- Storybook ---- -->
-  <article id="storybook" class="win project" data-win aria-labelledby="sb-title">
+  <article id="storybook" class="win project" data-win role="tabpanel" hidden aria-labelledby="sb-title">
     <div class="win-bar"><span class="win-ico">❀</span><span class="win-title">goodnight_boo.book</span><span class="win-btns" aria-hidden="true"><i>_</i><i>□</i><i class="x">×</i></span></div>
     <div class="win-body">
       <header class="proj-head">
@@ -361,7 +366,7 @@
   </article>
 
   <!-- ---- Growth chart ---- -->
-  <article id="growth" class="win project" data-win aria-labelledby="gc-title">
+  <article id="growth" class="win project" data-win role="tabpanel" hidden aria-labelledby="gc-title">
     <div class="win-bar"><span class="win-ico">✎</span><span class="win-title">growth_chart.bmp</span><span class="win-btns" aria-hidden="true"><i>_</i><i>□</i><i class="x">×</i></span></div>
     <div class="win-body">
       <header class="proj-head">
@@ -371,11 +376,18 @@
       <div class="growth" id="growthWall"></div>
     </div>
   </article>
+    </div>
+    <div class="desk-foot">
+      <button class="btn tiny" id="deskPrev" type="button">◂ previous</button>
+      <span class="desk-count" id="deskCount" aria-live="polite">1 / 5</span>
+      <button class="btn tiny btn-pink" id="deskNext" type="button">next project ▸</button>
+    </div>
+  </div>
 </section>
 
 <!-- ============ PipIM chat ============ -->
 <section id="chat" class="chat-sec" aria-labelledby="chat-title">
-  <h2 id="chat-title" class="sec-title"><span class="pixel">chapter 03</span> talk 2 me!!</h2>
+  <h2 id="chat-title" class="sec-title"><span class="pixel">chapter 04</span> talk 2 me!!</h2>
   <div class="im" data-win>
     <div class="win-bar"><span class="win-ico">✉</span><span class="win-title">PipIM — xX_PipDreams_Xx</span><span class="win-btns" aria-hidden="true"><i>_</i><i>□</i><i class="x">×</i></span></div>
     <div class="im-body">
@@ -402,7 +414,7 @@
 
 <!-- ============ Guestbook ============ -->
 <section id="guestbook" class="gb-sec" aria-labelledby="gb-title">
-  <h2 id="gb-title" class="sec-title"><span class="pixel">chapter 04</span> dream wish guestbook</h2>
+  <h2 id="gb-title" class="sec-title"><span class="pixel">chapter 05</span> dream wish guestbook</h2>
   <p class="sec-sub">leave a wish and i'll fold it into tonight's dreams. ♡ (be kind pls, babies read this)</p>
   <div class="gb">
     <form class="win gb-form" id="gbForm" data-win>
