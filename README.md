@@ -6,8 +6,10 @@ The portfolio homepage of **Pip**, Junior Dream Engineer at the Midnight Nursery
 
 It's styled as a 1998 GeoCribs homepage that Pip made on a pastel "PipOS 98" desktop: a dial-up boot screen, a marquee, beveled windows, a Start menu, a webring, 88×31 badges and an "under construction" sign. A sticky toolbar keeps navigation and controls (sound, day/night, chaos, secrets) at the top. Its mini address bar shows which "page" you're on, a progress strip fills as you scroll, and Pip floats in the corner as a tour guide who comments on each room and hops you to the next one. Underneath that, the craft is modern: Web Audio, SVG motion, CSS masks, canvas, and no frameworks or build step.
 
-**Live site:** _add your deploy URL here_
-**Repo:** _add your GitHub URL here_
+**Live site:** https://pip-dream-workshop.netlify.app/
+**Repo:** https://github.com/Raj-nikam26/baby_hackathon
+
+**Lighthouse (live, desktop):** Performance 90 · Accessibility 100 · Best Practices 100 · SEO 100
 
 ---
 
@@ -26,7 +28,7 @@ It's styled as a 1998 GeoCribs homepage that Pip made on a pastel "PipOS 98" des
 ### Tiers
 - **Tier 1:** cursor-reactive character ✓ · scroll-driven story ✓ · day/night mood toggle that changes Pip's expression *and* the palette ✓ · responsive ✓ · easter egg ✓
 - **Tier 2:** Lullaby Lab with real Web Audio ✓ · flashlight cursor (CSS mask) ✓ · Dream Delivery map with SVG path motion synced to scroll ✓ · interactive page-flip storybook (buttons, ← →, swipe, tap) ✓ · mini-game ✓
-- **Tier 3:** live guestbook backend ✓ · Pip remembers you (visit count, your name, custom greetings) ✓ · Pip chats back (rule-based PipIM, in character) ✓ · built lean for Lighthouse (no framework, ~100 KB of images, WebP, lazy-loading) ✓
+- **Tier 3:** live guestbook backend ✓ · Pip remembers you (visit count, your name, custom greetings) ✓ · Pip chats back (rule-based PipIM, in character) ✓ · Lighthouse desktop 90 / 100 / 100 / 100 (no framework, ~100 KB of images, WebP, lazy-loading, idle-time init, offscreen sections skip rendering) ✓
 
 ### Side quests (+13)
 - **Live Guestbook** (+2): "Dream Wish Guestbook", persisted with Netlify Functions + Netlify Blobs, with a kindness filter, a honeypot and a rate limit
