@@ -26,6 +26,16 @@ export function initStory() {
   addEventListener('scroll', () => {
     if (!queued) { queued = true; requestAnimationFrame(update); }
   }, { passive: true });
+  // the dots double as chapter buttons
+  dots.forEach((d, i) => {
+    d.addEventListener('click', () => {
+      const bar = document.getElementById('toolbar').offsetHeight;
+      const total = section.offsetHeight - (innerHeight - bar);
+      const top = section.getBoundingClientRect().top + scrollY - bar + ((i + 0.5) / dots.length) * total;
+      scrollTo({ top, behavior: 'smooth' });
+    });
+  });
+
   // phones: zoom the stage in a little so the scene isn't tiny
   const svg = $('.story-svg', stage);
   const fit = () => svg.setAttribute('viewBox', innerWidth < 700 ? '70 70 660 390' : '0 0 800 460');

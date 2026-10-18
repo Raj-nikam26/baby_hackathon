@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Pixelify+Sans:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@500;700;800&family=Pixelify+Sans:wght@400;600&family=Gochi+Hand&display=swap">
 <link rel="stylesheet" href="css/style.css">
 <script>
   // set mood + chaos before first paint so nothing flashes
@@ -47,19 +47,51 @@
 <canvas id="sparkles" aria-hidden="true"></canvas>
 <div class="sky" aria-hidden="true"><div class="sky-stars"></div><div class="sky-stars far"></div></div>
 
-<!-- ============ fake browser chrome / top bar ============ -->
-<header class="topbar">
-  <div class="addr" aria-hidden="true">
-    <span class="addr-label">Address</span>
-    <span class="addr-url">http://www.geocribs.net/MidnightNursery/Cradle/0013/~pip/</span>
-  </div>
-  <div class="marquee" aria-label="Announcements">
-    <div class="marquee-track">
-      <span>✦ welcome 2 my homepage!! ✦ i'm Pip, Junior Dream Engineer ✦ this site is UNDER CONSTRUCTION (forever) ✦ sign my guestbook pls!! ✦ best viewed at bedtime ✦ no scary stuff allowed ✦</span>
-      <span aria-hidden="true">✦ welcome 2 my homepage!! ✦ i'm Pip, Junior Dream Engineer ✦ this site is UNDER CONSTRUCTION (forever) ✦ sign my guestbook pls!! ✦ best viewed at bedtime ✦ no scary stuff allowed ✦</span>
+<!-- ============ sticky toolbar (navigation + controls) ============ -->
+<header class="toolbar" id="toolbar">
+  <div class="tb-inner">
+    <button class="tb-start" id="tbStart" type="button" aria-expanded="false" aria-controls="startMenu"><span class="tb-logo" aria-hidden="true">☾</span><span class="tb-start-l">Start</span></button>
+    <a class="addr" href="#hello" aria-label="Pip's Dream Workshop, back to top"><span class="addr-host">geocribs.net/~pip/</span><span class="addr-path" id="addrPath">hello</span></a>
+    <nav class="tb-nav" aria-label="Sections">
+      <a href="#hello" data-spy="hello">hello</a>
+      <a href="#story" data-spy="story">my story</a>
+      <a href="#work" data-spy="work">projects</a>
+      <a href="#chat" data-spy="chat">chat</a>
+      <a href="#guestbook" data-spy="guestbook">guestbook</a>
+    </nav>
+    <div class="tb-tray">
+      <button class="tb-btn" id="tbSound" type="button" aria-pressed="false" title="Mute / unmute all sounds"><span class="tb-i" aria-hidden="true">🔊</span><span class="tb-l">sound</span></button>
+      <button class="tb-btn" id="tbMood" type="button" title="Switch day / night"><span class="tb-i" aria-hidden="true">☾</span><span class="tb-l">night</span></button>
+      <button class="tb-btn chaos-btn" id="tbChaos" type="button" aria-pressed="false" title="Responsive Chaos Mode"><span class="tb-i" aria-hidden="true">✂</span><span class="tb-l">chaos</span></button>
+      <button class="tb-btn" id="tbSecrets" type="button" title="Secrets found"><span class="tb-i" aria-hidden="true">🔑</span><span class="tb-l" id="tbSecretsN">0/5</span></button>
+      <span class="tb-clock" id="tbClock" aria-hidden="true">--:--</span>
     </div>
   </div>
+  <div class="tb-progress" aria-hidden="true"><span id="tbProgress"></span></div>
+  <div class="start-menu" id="startMenu" hidden>
+    <div class="sm-side" aria-hidden="true">PipOS 98</div>
+    <ul>
+      <li><a href="#hello">☺ About Pip</a></li>
+      <li><a href="#story">✦ Pip's Story</a></li>
+      <li><a href="#lullaby-lab">♫ Lullaby Lab</a></li>
+      <li><a href="#nightlights">✺ Nightlights</a></li>
+      <li><a href="#routes">✈ Dream Routes</a></li>
+      <li><a href="#toys">✿ Toys</a></li>
+      <li><a href="#storybook">❀ Storybook</a></li>
+      <li><a href="#growth">✎ Growth Chart</a></li>
+      <li><a href="#chat">✉ PipIM</a></li>
+      <li><a href="#guestbook">✍ Guestbook</a></li>
+      <li class="sm-sep"><button type="button" id="smSecrets">🔑 Secrets hints…</button></li>
+      <li><button type="button" id="smShutdown">⏻ Shut Down…</button></li>
+    </ul>
+  </div>
 </header>
+<div class="marquee" aria-label="Announcements">
+  <div class="marquee-track">
+    <span>✦ welcome 2 my homepage!! ✦ i'm Pip, Junior Dream Engineer ✦ this site is UNDER CONSTRUCTION (forever) ✦ sign my guestbook pls!! ✦ best viewed at bedtime ✦ no scary stuff allowed ✦</span>
+    <span aria-hidden="true">✦ welcome 2 my homepage!! ✦ i'm Pip, Junior Dream Engineer ✦ this site is UNDER CONSTRUCTION (forever) ✦ sign my guestbook pls!! ✦ best viewed at bedtime ✦ no scary stuff allowed ✦</span>
+  </div>
+</div>
 
 <main id="main">
 
@@ -172,9 +204,9 @@
         <p data-cap="3">so i built a nightlight from a jar of very polite fireflies. one by one, the ghosts started to snore.</p>
         <p data-cap="4">the Midnight Nursery noticed. they gave me a badge, a tiny desk, and a job: <strong>Junior Dream Engineer</strong>.</p>
       </div>
-      <ol class="story-dots" aria-hidden="true"><li></li><li></li><li></li><li></li><li></li></ol>
+      <ol class="story-dots" aria-hidden="true"><li title="scene 1"></li><li title="scene 2"></li><li title="scene 3"></li><li title="scene 4"></li><li title="scene 5"></li></ol>
     </div>
-    <p class="scroll-hint pixel" aria-hidden="true">▼ keep scrolling ▼</p>
+    <p class="scroll-hint"><span aria-hidden="true">▼ scroll to turn the scenes ▼</span> <a href="#work" class="skip-story">skip to my projects ▸</a></p>
   </div>
 </section>
 
@@ -417,41 +449,19 @@
       <li>Pip (character, name, look &amp; job) and the 4 studio renders (Pip portrait, Pip on cloud, music box, moon lantern) are from the official <a href="https://hax.baby/baby-problem" rel="noopener">haX.baby Track 1 creator asset pack</a>.</li>
       <li>All other drawings (Pip SVG puppet, ghosts, houses, story scenes, storybook, nightlights) are hand-coded SVG/CSS made for this site.</li>
       <li>Every sound is synthesized live with the Web Audio API. No audio files are used. “Twinkle Twinkle Little Star” and Brahms' “Wiegenlied” are public domain melodies.</li>
-      <li>Fonts: <a href="https://fonts.google.com/specimen/Fredoka" rel="noopener">Fredoka</a> &amp; <a href="https://fonts.google.com/specimen/Pixelify+Sans" rel="noopener">Pixelify Sans</a> (SIL Open Font License) via Google Fonts. Emoji by your device.</li>
+      <li>Fonts: <a href="https://fonts.google.com/specimen/Fredoka" rel="noopener">Fredoka</a>, <a href="https://fonts.google.com/specimen/Nunito" rel="noopener">Nunito</a>, <a href="https://fonts.google.com/specimen/Pixelify+Sans" rel="noopener">Pixelify Sans</a> &amp; <a href="https://fonts.google.com/specimen/Gochi+Hand" rel="noopener">Gochi Hand</a> (SIL Open Font License) via Google Fonts. Emoji by your device.</li>
       <li>Built for <a href="https://hax.baby/first-website" rel="noopener">Baby's First Website</a> (haX.baby, Oct 2026) with plain HTML, CSS &amp; JS, with help from AI coding tools (Claude). Guestbook &amp; hit counter run on Netlify Functions + Blobs.</li>
     </ul>
   </div>
   <p class="pixel foot-last">© forever Pip ✦ this page was last updated at bedtime ✦ <a href="#hello">back to top ▴</a></p>
 </footer>
 
-<!-- ============ taskbar ============ -->
-<div class="taskbar" role="toolbar" aria-label="Pip's taskbar">
-  <button class="tb-start" id="tbStart" type="button" aria-expanded="false" aria-controls="startMenu"><span class="tb-logo">☾</span> Start</button>
-  <div class="start-menu" id="startMenu" hidden>
-    <div class="sm-side" aria-hidden="true">PipOS 98</div>
-    <ul>
-      <li><a href="#hello">☺ About Pip</a></li>
-      <li><a href="#story">✦ Pip's Story</a></li>
-      <li><a href="#lullaby-lab">♫ Lullaby Lab</a></li>
-      <li><a href="#nightlights">✺ Nightlights</a></li>
-      <li><a href="#routes">✈ Dream Routes</a></li>
-      <li><a href="#toys">✿ Toys</a></li>
-      <li><a href="#storybook">❀ Storybook</a></li>
-      <li><a href="#growth">✎ Growth Chart</a></li>
-      <li><a href="#chat">✉ PipIM</a></li>
-      <li><a href="#guestbook">✍ Guestbook</a></li>
-      <li class="sm-sep"><button type="button" id="smSecrets">🔑 Secrets hints…</button></li>
-      <li><button type="button" id="smShutdown">⏻ Shut Down…</button></li>
-    </ul>
-  </div>
-  <div class="tb-tray">
-    <button class="tb-btn" id="tbSound" type="button" aria-pressed="false" title="Mute / unmute all sounds"><span class="tb-i" aria-hidden="true">🔊</span><span class="tb-l">sound on</span></button>
-    <button class="tb-btn" id="tbMood" type="button" title="Switch day / night"><span class="tb-i" aria-hidden="true">☾</span><span class="tb-l">night</span></button>
-    <button class="tb-btn chaos-btn" id="tbChaos" type="button" aria-pressed="false" title="Responsive Chaos Mode"><span class="tb-i" aria-hidden="true">✺</span><span class="tb-l">chaos</span></button>
-    <button class="tb-btn" id="tbSecrets" type="button" title="Secrets found"><span class="tb-i" aria-hidden="true">🔑</span><span class="tb-l" id="tbSecretsN">0/5</span></button>
-    <span class="tb-clock pixel" id="tbClock" aria-hidden="true">--:--</span>
-  </div>
-</div>
+<!-- ============ Pip the tour guide ============ -->
+<button class="guide" id="guide" type="button" aria-label="Pip, your tour guide. Click to go to the next section.">
+  <span class="guide-bubble" id="guideBubble" aria-live="polite"></span>
+  <svg class="guide-pip" viewBox="0 0 100 100" aria-hidden="true"><use href="#i-pip"/></svg>
+  <span class="guide-next" aria-hidden="true">next ▾</span>
+</button>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 

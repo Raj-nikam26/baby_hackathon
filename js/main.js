@@ -1,5 +1,5 @@
 // Pip's Dream Workshop: boots the page and wires the shared bits
-// (taskbar, mood, sound, sparkles, visitor memory, hit counter).
+// (toolbar, mood, sound, sparkles, visitor memory, hit counter).
 import { $, $$, store, toast, on, emit, reducedMotion, pick, renderOdometer } from './util.js';
 import { sfx, isMuted, setMuted } from './audio.js';
 import { Pip } from './pip.js';
@@ -14,6 +14,7 @@ import { initChat } from './chat.js';
 import { initGuestbook } from './guestbook.js';
 import { initChaos } from './chaos.js';
 import { initEggs } from './eggs.js';
+import { initNav } from './nav.js';
 
 const root = document.documentElement;
 let pip;
@@ -46,10 +47,11 @@ function greeting() {
 /* ---------------- boot screen ---------------- */
 function boot() {
   const el = $('#boot');
-  if (!el) return;
+  if (!el) { document.body.classList.add('booted'); return; }
   const done = () => {
     if (el.classList.contains('gone')) return;
     el.classList.add('gone');
+    document.body.classList.add('booted');
     setTimeout(() => el.remove(), 600);
     if (pip) { pip.wave(); pip.say(greeting(), 4200); }
   };
@@ -333,6 +335,7 @@ safe('sparkles', sparkles);
 safe('clicks', clickSounds);
 safe('winbtns', windowButtons);
 safe('webring', webring);
+safe('nav', initNav);
 safe('story', initStory);
 safe('lullaby', initLullaby);
 safe('nightlights', initNightlights);

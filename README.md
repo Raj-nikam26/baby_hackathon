@@ -4,7 +4,7 @@
 
 The portfolio homepage of **Pip**, Junior Dream Engineer at the Midnight Nursery, built for **[Baby's First Website](https://hax.baby/baby-problem)** (haX.baby, 17–19 Oct 2026), **Track 1: The Skull Baby**.
 
-It's styled as a 1998 GeoCribs homepage that Pip made on a pastel "PipOS 98" desktop: a dial-up boot screen, a marquee, beveled windows, a Start menu, a taskbar, a webring, 88×31 badges and an "under construction" sign. Underneath that, the craft is modern: Web Audio, SVG motion, CSS masks, canvas, and no frameworks or build step.
+It's styled as a 1998 GeoCribs homepage that Pip made on a pastel "PipOS 98" desktop: a dial-up boot screen, a marquee, beveled windows, a Start menu, a webring, 88×31 badges and an "under construction" sign. A sticky toolbar keeps navigation and controls (sound, day/night, chaos, secrets) at the top. Its mini address bar shows which "page" you're on, a progress strip fills as you scroll, and Pip floats in the corner as a tour guide who comments on each room and hops you to the next one. Underneath that, the craft is modern: Web Audio, SVG motion, CSS masks, canvas, and no frameworks or build step.
 
 **Live site:** _add your deploy URL here_
 **Repo:** _add your GitHub URL here_
@@ -33,7 +33,7 @@ It's styled as a 1998 GeoCribs homepage that Pip made on a pastel "PipOS 98" des
 - **Sparkle Cursor Trail** (+2): stars, tiny dreamy bones, hearts and bubbles on a canvas
 - **Hit Counter Odometer** (+1): rolling green digits, backed by the server
 - **Click Sounds + Mute** (+3): every click chimes; the mute button is always visible in the taskbar and the choice is remembered
-- **Responsive Chaos Mode** (+5): the ✺ button. Windows tilt and scatter, title bars turn into rainbow stripes, Comic Sans takes over, and the layout takes on a different personality at each size: *pocket* (phone), *scrapbook* (tablet) and *MAXIMUM* (desktop). Pip notices when you resize, and on desktop you can drag windows by their title bars.
+- **Responsive Chaos Mode** (+5): the ✂ button. Pip "decorates" the site like a scrapbook: washi tape on every window, tilted windows, candy-striped title bars, crayon-style handwritten headings and stickers slapped in the margins. Each screen size gets its own personality: a *pocket sticker-book* on phones, a *scrapbook* on tablets and a *collage desk* on desktop, where you can drag windows by their title bars. Pip notices when you resize and redecorates.
 
 ### Easter eggs (🔑 counter in the taskbar)
 1. **Pom-Pom Polka**: boop Pip's nightcap pom-pom 3×
@@ -41,6 +41,9 @@ It's styled as a 1998 GeoCribs homepage that Pip made on a pastel "PipOS 98" des
 3. **All lit**: switch on all 6 nightlights in the dark closet
 4. **The Attic**: knock on the moon 3×
 5. **Dream Disco**: ↑ ↑ ↓ ↓ ← → ← → B A (on touch: tap the 🔑 button 5× fast)
+
+### Getting around
+There's a sticky toolbar with section links and a scrollspy highlight, plus a Start menu (the full table of contents, also the phone menu) and a floating Pip guide ("next ▾"). Windows fade softly into view and glow when you arrive at them. In the story, the progress dots are clickable and there's a "skip to my projects" link.
 
 Bonus jokes: Start → Shut Down ("It's now safe to go to sleep."), window ✕ buttons that refuse to close, and a webring with only one member.
 
@@ -74,7 +77,8 @@ The site also works as plain static hosting (GitHub Pages, Vercel static); the g
 ```
 index.html            all sections + shared SVG sprites
 css/style.css         themes (day/night), windows, layout, Chaos Mode
-js/main.js            boot screen, taskbar, mood, sound, sparkles, hit counter
+js/main.js            boot screen, toolbar controls, mood, sound, sparkles, hit counter
+js/nav.js             scrollspy, progress bar, reveal-on-scroll, Pip tour guide
 js/pip.js             the interactive SVG Pip puppet
 js/audio.js           Web Audio synth (bells, giggles, rattle, modem…) and tune player
 js/story.js           scroll-driven origin story
@@ -98,5 +102,5 @@ Accessibility: keyboard-reachable controls, visible focus, `aria-live` regions f
 - **Pip** (name, look, profession) and the four studio renders (portrait, Pip on a cloud, music box, moon lantern) are from the official **haX.baby Track 1 creator asset pack**, used under its terms.
 - Everything else visual (the SVG Pip puppet, ghosts, houses, story scenes, storybook pages, nightlights, game sprites) is hand-coded SVG, CSS and canvas made for this site.
 - All sounds are synthesized with the Web Audio API. "Twinkle Twinkle Little Star" and Brahms' "Wiegenlied" are public domain.
-- Fonts: [Fredoka](https://fonts.google.com/specimen/Fredoka) and [Pixelify Sans](https://fonts.google.com/specimen/Pixelify+Sans), SIL Open Font License, via Google Fonts.
+- Fonts: [Fredoka](https://fonts.google.com/specimen/Fredoka), [Nunito](https://fonts.google.com/specimen/Nunito), [Pixelify Sans](https://fonts.google.com/specimen/Pixelify+Sans) and [Gochi Hand](https://fonts.google.com/specimen/Gochi+Hand), SIL Open Font License, via Google Fonts.
 - Built with plain HTML/CSS/JS, with help from AI coding tools (Claude). Backend: Netlify Functions + `@netlify/blobs`.

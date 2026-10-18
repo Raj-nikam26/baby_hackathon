@@ -46,10 +46,12 @@ export function whenVisible(el, fn, rootMargin = '200px') {
 }
 
 // scroll progress (0..1) of a tall section with a sticky child
+// (accounts for the sticky toolbar the sticky stage sits under)
 export function sectionProgress(section) {
   const r = section.getBoundingClientRect();
-  const total = r.height - innerHeight;
-  return total <= 0 ? 0 : clamp(-r.top / total, 0, 1);
+  const bar = document.getElementById('toolbar')?.offsetHeight || 0;
+  const total = r.height - (innerHeight - bar);
+  return total <= 0 ? 0 : clamp((bar - r.top) / total, 0, 1);
 }
 
 export const escapeHTML = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));

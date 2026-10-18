@@ -1,4 +1,4 @@
-// Easter eggs! Five secrets, tracked in the taskbar and remembered between visits.
+// Easter eggs! Five secrets, tracked in the toolbar and remembered between visits.
 import { $, store, toast, on, emit, pick } from './util.js';
 import { sfx, playTune } from './audio.js';
 
